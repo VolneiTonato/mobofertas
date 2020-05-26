@@ -40,6 +40,8 @@ export const ServiceMobOfertasApi = ({
         })
     },
 
+  
+
 
     listProdutosByEstabelecimento: async (owner, query, opt = {page:1}) => {
         return new Promise(async (resolve, reject) => {

@@ -1,29 +1,25 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react'
+import { teal } from '@material-ui/core/colors'
 import {
-    Slide,
     Dialog,
-    AppBar,
     Toolbar,
     DialogContent,
     Button,
     makeStyles,
-    Box
+    Box,
+    DialogTitle,
+    Typography
 } from '@material-ui/core'
 import { ItemDetail } from './item-detail'
 
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="left" ref={ref} {...props} />
-})
-
 const useStyles = makeStyles((theme) => ({
-    appBar: {
-        position: 'relative',
+    DialogTitle:{
+        padding:0
     },
-    title: {
-        marginLeft: theme.spacing(2),
-        flex: 1,
-    },
+    buttonClose: {
+        color: teal['50']
+    }
 }));
 
 
@@ -47,14 +43,15 @@ export const ModalDetailItem = forwardRef((props, ref) => {
     if (display)
         return (
             <Box xs={6} sm={12}>
-                <Dialog open={display} onClose={handlerOnClose} TransitionComponent={Transition} >
-                    <AppBar className={classes.appBar}>
+                <Dialog open={display} onClose={handlerOnClose}>
+
+                    <DialogTitle className={classes.DialogTitle}>
                         <Toolbar>
-                            <Button color="inherit" onClick={handlerOnClose}>
-                                Fechar
+                            <Button onClick={handlerOnClose}>
+                                <Typography className={classes.buttonClose}>{`FECHAR`}</Typography>
                             </Button>
                         </Toolbar>
-                    </AppBar>
+                    </DialogTitle>
 
 
                     <DialogContent>

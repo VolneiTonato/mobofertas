@@ -45,7 +45,7 @@ export const ModalImage = forwardRef(({fullScreen, fullWidth, image }, ref) => {
     if (display)
         return (
 
-            <Dialog fullScreen={fullScreen} fullWidth={fullWidth} open={display} onClose={handlerOnClose} TransitionComponent={Transition} >
+            <Dialog fullScreen={fullScreen} fullWidth={fullWidth} open={display} onClose={handlerOnClose}>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
                         <Button color="inherit" onClick={handlerOnClose}>

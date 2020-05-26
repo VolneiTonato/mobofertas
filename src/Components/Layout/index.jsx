@@ -1,9 +1,9 @@
 import React, { Fragment, useState, useEffect} from 'react'
 import {Link, useHistory, withRouter} from 'react-router-dom'
 import { BottomNavigation, BottomNavigationAction, AppBar } from '@material-ui/core'
-import { PeopleOutline, HomeOutlined } from '@material-ui/icons'
+import { PeopleOutline, HomeOutlined, SettingsOutlined } from '@material-ui/icons'
 
-const urls = ['/home','/contato']
+const urls = ['/home','/divulgar', '/contato']
 
 const LayoutApp = (props) => {
 
@@ -39,8 +39,8 @@ const LayoutApp = (props) => {
                         showLabels
                     >
                         <BottomNavigationAction value={urls[0]} to={urls[0]} component={Link}  label="Início" icon={<HomeOutlined />} />
-                        {/*<BottomNavigationAction value={urls[1]} to={urls[1]} component={Link}  label="Configuração" icon={<SettingsOutlined />} />*/}
-                        <BottomNavigationAction value={urls[1]} to={urls[1]} component={Link}  label="Contato" icon={<PeopleOutline />} />
+                        <BottomNavigationAction value={urls[1]} to={urls[1]} component={Link}  label="Divulgar" icon={<SettingsOutlined />} />
+                        <BottomNavigationAction value={urls[2]} to={urls[2]} component={Link}  label="Contato" icon={<PeopleOutline />} />
                     </BottomNavigation>
 
                 

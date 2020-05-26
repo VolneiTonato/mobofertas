@@ -63,6 +63,7 @@ const SearchBar = ({ placeholder, handlerOnChangeQuery }) => {
 
     const classes = useStyle()
 
+    
 
     return (
         <Paper variant="elevation" square elevation={3}>
