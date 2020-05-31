@@ -1,8 +1,10 @@
-import React, { Fragment, forwardRef } from 'react'
-import { List, ListItem, ListItemAvatar, ListItemText, IconButton, Divider, ListItemSecondaryAction, ListItemIcon, makeStyles, Avatar, Box } from '@material-ui/core'
+import React, { Fragment, forwardRef, useRef } from 'react'
+import { List, ListItem, ListItemAvatar, ListItemText, IconButton, Divider, ListItemSecondaryAction, makeStyles, Avatar, Box } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { useEstabelecimentoSelecionadoContext } from '../../../../Context/EstabelecimentoSelecionadoContext'
+import { useProdutoSearchContext } from '../../../../Context/ProdutoSearchContext'
 
 
 const useStyle = makeStyles((theme) => ({
@@ -18,8 +20,8 @@ const useStyle = makeStyles((theme) => ({
         height: theme.spacing(7),
 
     },
-    ListItemAvatar:{
-        paddingRight:theme.spacing(2)
+    ListItemAvatar: {
+        paddingRight: theme.spacing(2)
     }
 }))
 
@@ -27,10 +29,16 @@ const Estabelecimento = ({ item }, ref) => {
 
     const classes = useStyle()
 
+    const { dispatch } = useEstabelecimentoSelecionadoContext()
+    const { dispatch: dispatchProduto } = useProdutoSearchContext()
+
     const history = useHistory()
 
     const handlerGoToEstabelecimento = (item) => {
-        history.push('/estabelecimento', { item })
+        dispatchProduto.updateState({ owner: item._id, data: [], page: 1 })
+        dispatch.updateState({ item })
+        history.push('/estabelecimento')
+        
     }
 
     return (
@@ -56,8 +64,8 @@ const Estabelecimento = ({ item }, ref) => {
                 />
 
                 <ListItemSecondaryAction>
-                    
-                    <IconButton onClick={(e) => handlerGoToEstabelecimento(item)}>
+
+                    <IconButton onClick={e => handlerGoToEstabelecimento(item)}>
                         <FontAwesomeIcon icon={faChevronRight} />
                     </IconButton>
                 </ListItemSecondaryAction>

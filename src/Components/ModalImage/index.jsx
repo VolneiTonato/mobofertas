@@ -1,6 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react'
 import {
-    Slide,
     Dialog,
     AppBar,
     Toolbar,
@@ -10,9 +9,6 @@ import {
     Grid
 } from '@material-ui/core'
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="left" ref={ref} {...props} />
-})
 
 const useStyles = makeStyles((theme) => ({
     appBar: {

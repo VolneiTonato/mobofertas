@@ -14,7 +14,7 @@ export const RouterNavigationBottomPrimary = (props) => {
         <Switch>
             <Route exact path="/" render={renderProps => <LayoutApp {...props} {...renderProps}><HomePage {...props} {...renderProps} /></LayoutApp>} />
             <Route exact path="/home" render={renderProps => <LayoutApp {...props} {...renderProps}><HomePage {...props} {...renderProps} /></LayoutApp>} />
-            <Route exact path="/divulgar" render={renderProps => <LayoutApp {...props} {...renderProps}><HomePage {...props} {...renderProps} /></LayoutApp>} />
+            {/*<Route exact path="/divulgar" render={renderProps => <LayoutApp {...props} {...renderProps}><HomePage {...props} {...renderProps} /></LayoutApp>} />*/}
             <Route exact path="/contato" render={renderProps => <LayoutApp {...props} {...renderProps}><ContatoPage {...props} {...renderProps} /></LayoutApp>} />
             <Route exact path="/estabelecimento" render={(renderProps) => <EstabelecimentoPage {...props} {...renderProps} />} />
             <Route path="/*" render={e => <h1>Page Not Fount!</h1>} />

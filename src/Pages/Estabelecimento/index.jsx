@@ -1,11 +1,13 @@
 import React, { Fragment, useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import { Box,  AppBar, Typography, Tab, Tabs } from '@material-ui/core'
+import { Box, AppBar, Typography, Tab, Tabs } from '@material-ui/core'
 import { ScrollTopButton } from '../../Components/ScrollTop'
 
 import AppBarEstabelecimento from './app-bar'
 import SearchBar from '../../Components/SearchBar'
 
+import { useEstabelecimentoSelecionadoContext } from '../../Context/EstabelecimentoSelecionadoContext'
+import { useProdutoSearchContext } from '../../Context/ProdutoSearchContext'
 import LojaInfo from './innerComponent/Loja'
 import TabloideList from './innerComponent/Tabloides'
 import ProdutoList from './innerComponent/Produtos'
@@ -50,30 +52,34 @@ const LinkTab = (props) => {
 
 const Estabelecimento = (props) => {
 
-    const { item } = props?.location?.state
     const [value, setValue] = useState(0)
     const { match } = props
-    const [query, setQuery]  = useState()
+    const { dispatch } = useProdutoSearchContext()
+    const { state: stateEstabelecimento } = useEstabelecimentoSelecionadoContext()
 
 
-    if (!item)
+    if (stateEstabelecimento.item?._id === undefined)
         return <Redirect to={{ pathname: '/home', state: props.location }} />
-
+        
 
     const handlerOnChangeQuery = (e) => {
-        setQuery(e.target.value)
-
+        dispatch.updateState({ page: 1, query: e.target.value, data: [] })
     }
-    
+
+
 
     const handleChange = (e, newValue) => {
         setValue(newValue)
     }
 
+    
+
+
+
     return (
         <Fragment>
 
-            <AppBarEstabelecimento item={item} />
+            <AppBarEstabelecimento item={stateEstabelecimento.item} />
 
             <Box marginTop={10}></Box>
 
@@ -95,16 +101,16 @@ const Estabelecimento = (props) => {
             <TabPanel value={value} index={0}>
                 <SearchBar handlerOnChangeQuery={handlerOnChangeQuery} placeholder="Pesquise o produto aqui" />
                 <Box marginBottom={2}></Box>
-                <ProdutoList query={query} item={item} />
+                <ProdutoList />
             </TabPanel>
 
             <TabPanel value={value} index={1}>
-                <TabloideList item={item} />
+                <TabloideList />
             </TabPanel>
 
 
             <TabPanel value={value} index={2}>
-                <LojaInfo item={item} />
+                <LojaInfo />
             </TabPanel>
 
 

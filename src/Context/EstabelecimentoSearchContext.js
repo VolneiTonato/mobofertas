@@ -1,72 +1,98 @@
-import React, { createContext, useReducer } from 'react'
-import Proptypes from 'prop-types'
+import React, { createContext, useReducer, useContext } from 'react'
 import { ServiceMobOfertasApi as Api } from '../Services/MobOfertasApi'
-import {ACTIONS} from '../Constants/actions'
-import reducer from '../Reducers/EstabelecimentoSearchReducer'
 
 
-export const EstabelecimentoSearchContext = createContext()
-
-const INITIAL_STATE = {
+const defineObjectState = Object.freeze({
     data: [],
     hasMore: false,
     loading: false,
     error: false,
-    noData : false,
+    noData: false,
     query: '',
+    categories: [],
     page: 1
+})
+
+const defineObjectContext = {
+    state: defineObjectState,
+    dispatch: {
+        updateState: (data = defineObjectState) => { },
+        pageNext: () => { },
+        pesquisar: () => { }
+
+    }
+}
+
+const defineDefaultCallDispatch = {
+    type: '',
+    payload: defineObjectState
 }
 
 
+const reducer = (state, {type, payload}) => {
+    switch(type){
+        case 'UPDATE':
+            return {...state, ...payload}
+        default:
+            return state
+    }
+}
+
+
+const EstabelecimentoSearchContext = createContext(defineObjectContext)
+
+
 export function EstabelecimentoSearchProvider({ children }) {
-    const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
+
+    const [state, callDispatch = defineDefaultCallDispatch] = useReducer(reducer, defineObjectState)
 
     const pesquisar = async () => {
 
         try {
-            return await Api.listEstabelecimentos(state.query, { page: state.page })
+
+            dispatch.updateState({ loading: true })
+
+            let res = await Api.listEstabelecimentos(state.query, state.categories, { page: state.page })
+
+            let noData = res.response?.length === 0 && state.page === 1
+
+            dispatch.updateState({ data: res.response, hasMore: res.pageNext, loading: false, noData: noData })
+
         } catch (err) {
-            return { ...state, error: false }
+            dispatch.updateState({ error: true, loading: false })
         }
 
+        return state
     }
 
+    const handlerCustomDispatch = () => {
 
-    const customDispatch = async (action) => {
+        return {
 
+            updateState: (data = defineObjectState) => {
+                callDispatch({type: 'UPDATE', payload: data})
+            },
 
+            pesquisar: pesquisar,
 
-        switch (action.type) {
-
-
-            case ACTIONS.ESTABELECIMENTO_SEARCH.PESQUISAR:
-
-                dispatch({type:ACTIONS.ESTABELECIMENTO_SEARCH.LOADING})
-
-                let res = await pesquisar()
-
-                let notHaveData = res.response.length === 0 && state.page === 1
-
-                let itens = state.page === 1 ? res.response : [...state.data, ...res.response]
-
-                dispatch({type: ACTIONS.ESTABELECIMENTO_SEARCH.LIST_ITENS, payload: itens, hasMore: res.pageNext, noData : notHaveData})
-
-                break
-
-            default:
-                dispatch(action)
-                break
+            pageNext: () => {
+                return handlerCustomDispatch().updateState({ page: state.page + 1 })
+            }
         }
     }
+
+    const dispatch = handlerCustomDispatch()
+
+
 
     return (
-        <EstabelecimentoSearchContext.Provider value={{ state, dispatch: customDispatch }}>
+        <EstabelecimentoSearchContext.Provider value={{ state: Object.freeze(state), dispatch }}>
             {children}
         </EstabelecimentoSearchContext.Provider>
     )
 
 }
 
-EstabelecimentoSearchProvider.prototypes = {
-    children: Proptypes.node.isRequired
+export const useEstabelecimentoSearchContext = () => {
+    return useContext(EstabelecimentoSearchContext)
 }

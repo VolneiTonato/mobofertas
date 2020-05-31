@@ -3,20 +3,21 @@ import {ServiceMobOfertasApi} from '../../../../Services/MobOfertasApi'
 import {Grid, Box, CircularProgress} from '@material-ui/core'
 import {Alert} from '@material-ui/lab'
 import TabloideItem from './list-item'
+import {useEstabelecimentoSelecionadoContext} from '../../../../Context/EstabelecimentoSelecionadoContext'
 
 const Tabloide = (props) => {
 
-    const {item} = props
     const [tabloides, setTabloides] = useState([])
     const [displayNotTabloide, setDisplayNotTabloide]  = useState(false)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
+    const {state:stateEstabelecimento} = useEstabelecimentoSelecionadoContext()
 
 
     const pesquisarTabloides = async () => {
         try{
             setLoading(true)
-            await ServiceMobOfertasApi.listTabloidesByEstabelecimento(item._id)
+            await ServiceMobOfertasApi.listTabloidesByEstabelecimento(stateEstabelecimento.item._id)
             .then((data) => {
                 let response = data?.response || []
                 
@@ -34,7 +35,7 @@ const Tabloide = (props) => {
 
     useEffect(() =>{
         pesquisarTabloides()
-    }, [])
+    }, [])//eslint-disable-line react-hooks/exhaustive-deps
     
 
     return (

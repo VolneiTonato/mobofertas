@@ -1,13 +1,11 @@
-import React, { memo, useRef, useEffect , useState} from 'react'
+import React, { memo} from 'react'
 
 import {
-    Paper, makeStyles, fade, TextField, InputAdornment, IconButton
+    Paper, makeStyles, fade, TextField, InputAdornment
 } from '@material-ui/core'
 
-import { SearchOutlined, CloseOutlined } from '@material-ui/icons'
+import { SearchOutlined } from '@material-ui/icons'
 import PropTypes from 'prop-types'
-
-import {size} from 'lodash'
 
 const useStyle = makeStyles((theme) => ({
 

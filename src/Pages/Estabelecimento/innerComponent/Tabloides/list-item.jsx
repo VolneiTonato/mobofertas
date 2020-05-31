@@ -48,7 +48,7 @@ const TabloideItem = ({ item }) => {
         else
             setFormat(<Box component="div" textAlign="center">Válido até {formatDate}</Box>)
 
-    }, [setAvatar, setFormat, classes, item])
+    }, [setAvatar, setFormat, classes, item])//eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Grid item xs={12} sm={4}>

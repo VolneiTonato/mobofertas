@@ -1,9 +1,9 @@
 import {Api} from './config'
 import axios from 'axios'
-
+import {size} from 'lodash'
 export const ServiceMobOfertasApi = ({
 
-    listEstabelecimentos: async (query, opt = {page:1}) => {
+    listEstabelecimentos: async (query, categories, opt = {page:1}) => {
         return new Promise(async (resolve, reject) => {
             try {
 
@@ -13,6 +13,11 @@ export const ServiceMobOfertasApi = ({
 
                 if(query)
                     urlToString = `${urlToString}&q=${query}`
+
+                if(size(categories))
+                    urlToString = `${urlToString}&categories=${categories}`
+
+                
 
 
                 const { data } = await Api.get(`${urlToString}`)

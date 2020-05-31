@@ -1,57 +1,50 @@
-import React, { useEffect,  Fragment, useRef, useCallback, useContext } from 'react'
+import React, { useEffect, Fragment, useRef, useCallback } from 'react'
 import ListItemEstabelecimento from './list-item'
 import { Grid, Box, CircularProgress } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import {size} from 'lodash'
-import {ACTIONS} from '../../../../Constants/actions'
+import { size } from 'lodash'
 
-import {EstabelecimentoSearchContext} from '../../../../Context/EstabelecimentoSearchContext'
+import { useEstabelecimentoSearchContext } from '../../../../Context/EstabelecimentoSearchContext'
+import { useCategorieFilterEstabelecimentoContext } from '../../../../Context/CategorieFilterEstabelecimentoContext'
+//import { useContextMulti } from '../../../../Store/combine/outher'
 
-const EstabelecimentosHome = (props) => {
-    const {state, dispatch} = useContext(EstabelecimentoSearchContext)
-
+const EstabelecimentosHome = () => {
+    const {state, dispatch} = useEstabelecimentoSearchContext()
+    const { state: stateCategorie } = useCategorieFilterEstabelecimentoContext()
 
     const observer = useRef()
 
+    
     const lastElementRef = useCallback(node => {
+
         if (state.loading) return
 
         if (observer.current) observer.current.disconnect()
 
         observer.current = new IntersectionObserver(entries => {
-            
-            if (entries[0].isIntersecting && state.hasMore) {
 
-                dispatch({type:ACTIONS.ESTABELECIMENTO_SEARCH.CHANGE_PAGE})
-            }
-            
+            if (entries[0].isIntersecting && state.hasMore) 
+                dispatch.pageNext()
         })
 
         if (node) observer.current.observe(node)
 
-    }, [state.loading, state.hasMore])
-
-
-
-    useEffect(() => {
-        dispatch({type: ACTIONS.ESTABELECIMENTO_SEARCH.RESET_PAGE_AND_DATA})
-    }, [state.query])
-
-
-    useEffect(() => {
-        dispatch({type:ACTIONS.ESTABELECIMENTO_SEARCH.PESQUISAR})
-    }, [state.query, state.page])
-
-
-    useEffect(() => {
-        dispatch({type:ACTIONS.ESTABELECIMENTO_SEARCH.RESET_PAGE})
     }, [])
 
+    useEffect(() => {
+        dispatch.pesquisar()
+    }, [state.query, state.page, state.categories])
 
+
+
+
+
+
+    
     const MessageNotDataQuery = () => {
-        return size(state.query) ? (
+        return size(state.query) > 0 ? (
             <Alert variant="outlined" severity="warning">
-                {'Nenhum produto encontrado com a pesquisa desejada.'}
+                {'Nenhum estabelecimento encontrado com a pesquisa desejada.'}
             </Alert>
         ) : null
     }
@@ -59,7 +52,7 @@ const EstabelecimentosHome = (props) => {
     const MessageNotData = () => {
         return state.noData === true && size(state.query) === 0 ? (
             <Alert variant="outlined" severity="warning">
-                {'Não há produtos cadastrados no momento para este estabelecimento.'}
+                {'Não há estabelecimentos cadastrados no mobofertas.'}
             </Alert>
         ) : null
     }
@@ -67,6 +60,7 @@ const EstabelecimentosHome = (props) => {
 
     return (
         <Fragment>
+            
             {state.data.length > 0 ? (
                 <Fragment>
                     {state.data.map((row, idx) =>
@@ -75,14 +69,14 @@ const EstabelecimentosHome = (props) => {
                                 {state.data.length === (idx + 1) ? (
                                     <ListItemEstabelecimento key={row._id} item={row} ref={lastElementRef} />
                                 ) : (
-                                        <ListItemEstabelecimento key={row._id} item={row} />
+                                    <ListItemEstabelecimento key={row._id} item={row} />
                                     )}
                             </Grid>
                         </Grid>
                     )}
                 </Fragment>
 
-            ): state.loading || state.error ? null : (
+            ) : state.loading || state.error ? null : (
                 <Box component="span">
                     <MessageNotDataQuery />
                     <MessageNotData />

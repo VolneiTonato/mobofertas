@@ -1,22 +1,12 @@
-import React, { Fragment,  useState} from 'react'
+import React, { Fragment} from 'react'
 import AppBarHome from './app-bar'
 import Categoria from './innerComponent/Categorias'
 import Estabelecimento from './innerComponent/Estabelecimentos'
 import { Box } from '@material-ui/core'
-import { size } from 'lodash'
-
 
 const Home = () => {
-    /*
-    const [query, setQuery] = useState()
 
-    const handlerOnChangeQuery = (e) => {
-        
-        if(size(e.target.value) <= 30)
-            setQuery(e.target.value)
-    }*/
 
-    
     return (
         <Fragment>
 

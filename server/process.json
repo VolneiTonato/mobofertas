@@ -1,0 +1,13 @@
+{
+  "apps": [
+    {
+      "name": "site-mobofertas",
+      "script": "./index.js",
+      "ignore_watch":["node_modules","public"],
+      "error_file":"/dev/null",
+      "env":{
+        "NODE_ENV":"production"
+      }
+    }
+  ]
+}

@@ -1,101 +1,162 @@
-import React, { createContext, useReducer } from 'react'
-import Proptypes from 'prop-types'
-import Reducer from '../Reducers/CategorieFilterEstabelecimentoReducer'
-import { shuffle as randArray } from 'lodash'
-import { ACTIONS } from '../Constants/actions'
+import React, { createContext, useContext } from 'react'
 import { ServiceCategoriaEstabelecimento as Api } from '../Services/MobOfertasApi/CategoriasEstabelecimentos'
+import { clone as cloneObject } from 'lodash'
+import { useEstabelecimentoSearchContext} from './EstabelecimentoSearchContext'
 
-
-const objectStruct = {
-    state: {
-        data: Proptypes.array,
-        loading: Proptypes.bool,
-        error: Proptypes.bool,
-        filterQuery: {
-            itens: Proptypes.array,
-            isClear: Proptypes.bool
-        }
-    },
-    dispatch: Proptypes.func
-}
-
-export const CategorieFilterEstabelecimentoContext = createContext(objectStruct)
-
-let cacheSelectors = []
-
-const INITIAL_STATE = {
+const defineObjectState = {
     data: [],
     loading: false,
     error: false,
-    filterQuery: {
-        itens: [],
-        isClear: false
+    itensSelected: [],
+    cacheItensSelected: [],
+    noData: false,
+    isClear: false
+}
+
+const defineObjectContext = {
+    state: defineObjectState,
+    dispatch: {
+        updateState: (data = defineObjectState) => { },
+        pesquisar: () => { },
+        changeItemSelectedCache: (payload) => { },
+        aplicarFiltros: () => { },
+        clearFilters: () => { },
     }
 }
 
+
+
+const useStateReducer = (prevState, dispatchArg) => typeof dispatchArg === 'function' ? dispatchArg(prevState) : dispatchArg
+
+const useStateInitializer = initialArg =>  typeof initialArg === 'function' ? initialArg() : initialArg
+
+const useState = (initialValue) => {
+    return React.useReducer(useStateReducer, initialValue, useStateInitializer)
+}
+
+
+const CategorieFilterEstabelecimentoContext = createContext(defineObjectContext)
+
+CategorieFilterEstabelecimentoContext.displayName = "CategorieFilterEstabelecimentoContext"
+
+
 export function CategorieFilterEstabelecimentoProvider({ children }) {
 
-    const [state, dispatch] = useReducer(Reducer, INITIAL_STATE)
+    const [state, setState] = useState(defineObjectState)
+    const {dispatch:teste} = useEstabelecimentoSearchContext()
 
-    const fetchLoadData = async () => {
-        cacheSelectors = []
 
-        dispatch({ type: 'CATEGORIES_FILTER_LOADING' })
+    const pesquisar = async () => {
+        try {
 
-        let { data } = await Api.listCategoriasPrincipais()
+            if (state.data.length)
+                return state
 
-        dispatch({ type: 'CATEGORIES_FILTER_AFTER_FETCH_LIST', payload: { data: randArray(data) } })
+            dispatch.updateState({ loading: true })
+
+            let res = await Api.listCategoriasPrincipais()
+
+            let noData = res.response?.length === 0 && state.page === 1
+
+            dispatch.updateState({ data: res.data, loading: false, noData: noData, error: false, cacheItensSelected: [], isClear: false })
+
+        } catch (err) {
+
+            dispatch.updateState({ error: true, loading: false })
+        }
+
+        return state
     }
 
-    const handlerAplicateFilter = () => {
-        dispatch({ type: 'CATEGORIES_FILTER_APPLY_SELECTED', payload: cacheSelectors})
+    const aplicarFiltros = () => {
+
+        let itens = []
+
+        let isClear = state.isClear
+
+
+
+        if (isClear === false) {
+            itens = cloneObject(state.cacheItensSelected)
+
+            if (isClear === false && state.itensSelected.length > 0 && state.cacheItensSelected.length === 0)
+                itens = cloneObject(state.itensSelected)
+
+        }
+
+        
+        dispatch.updateState({ itensSelected: itens, cacheItensSelected: itens, isClear: false })
+
+        return state
     }
 
-    const selectCheckBoxToUrl = (payload) => {
+    const changeItemSelectedCache = (payload) => {
 
-        if (!cacheSelectors.includes(payload))
-            cacheSelectors.push(payload)
+        let cacheItens = []
+
+        if (state.isClear === false && state.itensSelected.length > 0 && state.cacheItensSelected.length === 0)
+            cacheItens = cloneObject(state.itensSelected)
+
+        if (cacheItens.length === 0)
+            cacheItens = cloneObject(state.cacheItensSelected)
+
+
+
+        if (cacheItens.includes(payload))
+            cacheItens = cacheItens.filter(prev => prev !== payload)
         else
-            cacheSelectors = cacheSelectors.filter(prev => prev !== payload)
+            cacheItens.push(payload)
 
+        if (cacheItens.length)
+            dispatch.updateState({ isClear: false, cacheItensSelected: cacheItens })
+        else
+            dispatch.updateState({ isClear: true, cacheItensSelected: cacheItens })
+
+        return state
     }
 
 
-    const customDispatch = async (action) => {
 
-        switch (action.type) {
 
-            case ACTIONS.CATEGORIE_FILTER_ESTABELECIMENTO.GET_ALL:
 
-                await fetchLoadData()
+    const handlerCustomDispatch = () => {
 
-                break
+        return {
 
-            case 'CATEGORIES_FILTER_ADD_ITEM_SELECTED':
-                selectCheckBoxToUrl(action.payload)
+            updateState: (data = defineObjectState) => {
+                setState(prev => {return {...prev, ...data}})
+            },
 
-                break
+            pesquisar: pesquisar,
 
-            case 'CATEGORIES_FILTER_APPLY_SELECTED':
+        
 
-                handlerAplicateFilter()
-                break
+            changeItemSelectedCache: changeItemSelectedCache,
 
-            default:
-                dispatch(action)
+            aplicarFiltros: aplicarFiltros,
+
+            clearFilters: () => {
+                dispatch.updateState({ cacheItensSelected: [], isClear: true })
+
+                return state
+            }
         }
     }
 
+    const dispatch = handlerCustomDispatch()
 
 
     return (
-        <CategorieFilterEstabelecimentoContext.Provider value={{ state, dispatch: customDispatch }}>
+        <CategorieFilterEstabelecimentoContext.Provider value={{ state: Object.freeze(state), dispatch }}>
             {children}
         </CategorieFilterEstabelecimentoContext.Provider>
     )
 
 }
 
-CategorieFilterEstabelecimentoProvider.prototypes = {
-    children: Proptypes.node.isRequired
+
+
+export const useCategorieFilterEstabelecimentoContext = () => {
+    return useContext(CategorieFilterEstabelecimentoContext)
 }
+

@@ -1,14 +1,14 @@
 import React from 'react'
 import Router from './Routes'
-import {AppContextProviderState} from './Store'
+import {MasterProvider} from './Store'
 
 import 'typeface-roboto'
 
 const App = () => {
   return (
-    <AppContextProviderState>
+    <MasterProvider>
       <Router />
-    </AppContextProviderState>
+    </MasterProvider>
   )
 }
 

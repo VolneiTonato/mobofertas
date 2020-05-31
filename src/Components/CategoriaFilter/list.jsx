@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react'
-
+import React, { useState, useEffect } from 'react'
 import { Chip } from '@material-ui/core'
-import { CategorieFilterEstabelecimentoContext } from '../../Context/CategorieFilterEstabelecimentoContext'
+import { useCategorieFilterEstabelecimentoContext } from '../../Context/CategorieFilterEstabelecimentoContext'
 
 
 const ListItem = ({ categorie }) => {
 
-    const { state: CategorieState, dispatch:CategorieDispatch } = useContext(CategorieFilterEstabelecimentoContext)
+    const { state: CategorieState, dispatch: CategorieDispatch } = useCategorieFilterEstabelecimentoContext()
     const [color, setColor] = useState('default')
     const [checked, setChecked] = useState(false)
 
@@ -15,19 +14,16 @@ const ListItem = ({ categorie }) => {
     const isChecked = (categorie) => {
 
         setChecked(prev => !prev)
-
-        CategorieDispatch({
-            type:'CATEGORIES_FILTER_ADD_ITEM_SELECTED',
-            payload: categorie._id
-        })
+        
+        CategorieDispatch.changeItemSelectedCache(categorie._id)
     }
-    
+
     useEffect(() => {
 
-        if(CategorieState.filterQuery.isClear)
+        if (CategorieState.isClear)
             setChecked(false)
 
-    }, [CategorieState.filterQuery.isClear])
+    }, [CategorieState.isClear, CategorieState.cacheItensSelected])
 
     useEffect(() => {
         if (checked)
@@ -39,11 +35,11 @@ const ListItem = ({ categorie }) => {
 
     useEffect(() => {
 
-        const exists = CategorieState.filterQuery.itens.find(prev => prev === categorie._id)
+        const exists = CategorieState.itensSelected.find(prev => prev === categorie._id)
 
         if (exists)
             setChecked(true)
-    }, [])
+    }, [])//eslint-disable-line react-hooks/exhaustive-deps
 
 
     return (

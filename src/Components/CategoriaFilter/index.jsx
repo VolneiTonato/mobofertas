@@ -1,22 +1,19 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useEffect } from 'react'
-import { ACTIONS } from '../../Constants/actions'
 import ListItem from './list'
 import { Grid } from '@material-ui/core'
-import { CategorieFilterEstabelecimentoContext } from '../../Context/CategorieFilterEstabelecimentoContext'
+import { Alert } from '@material-ui/lab'
+import { useCategorieFilterEstabelecimentoContext } from '../../Context/CategorieFilterEstabelecimentoContext'
 
 
 const CategoriaFilter = () => {
-    const { state:CategorieState, dispatch } = useContext(CategorieFilterEstabelecimentoContext)
-
-
+    const { state: CategorieState, dispatch } = useCategorieFilterEstabelecimentoContext()
     
 
     useEffect(() => {
-        dispatch({
-            type: ACTIONS.CATEGORIE_FILTER_ESTABELECIMENTO.GET_ALL
-        })
-    }, [])
+
+        dispatch.pesquisar()
+    }, []) //eslint-disable-line react-hooks/exhaustive-deps
 
 
 
@@ -37,9 +34,14 @@ const CategoriaFilter = () => {
                     </Grid>
                 </Grid>
 
-            ) : null
+            ) : CategorieState.noData && CategorieState.error === false ? <Alert variant="outlined" severity="warning">
+                {'Não há categorias cadastrados no momento para este estabelecimento.'}
+            </Alert> : null
             }
             {CategorieState.loading && <p>Carregando</p>}
+            {CategorieState.error && <Alert variant="outlined" severity="error">
+                {'Ocorreu um erro ao pesquisar categorias! Tente novamente.'}
+            </Alert>}
 
         </>
     )

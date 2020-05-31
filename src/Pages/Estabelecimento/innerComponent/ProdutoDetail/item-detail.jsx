@@ -10,21 +10,21 @@ import {
 import { red } from '@material-ui/core/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCameraRetro } from '@fortawesome/free-solid-svg-icons'
+import Moment from 'moment'
 
-import {ModalImage} from '../../../../Components/ModalImage'
+import { ModalImage } from '../../../../Components/ModalImage'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        minWidth:200,
-        maxWidth:350,
         width: '100%',
     },
     media: {
         width: '100%',
         display: 'flex',
         justifyContent: 'center',
-        minHeight:'150px',
-        lineHeight: '150px'
+        minHeight: '150px',
+        lineHeight: '150px',
+        cursor: "pointer"
     },
     avatar: {
         backgroundColor: red[500],
@@ -34,9 +34,34 @@ const useStyles = makeStyles((theme) => ({
 export const ItemDetail = (props) => {
     const classes = useStyles()
 
-    const {item, ImagemItem, IconNoImage} = props
+    const { item, ImagemItem, IconNoImage } = props
 
     const modalImage = useRef()
+
+
+    const PrintValidade = () => {
+        let dateAtual = Moment(new Date()).format('DD/MM/YYYY')
+        let data = Moment(new Date(item.dataValidade)).format('DD/MM/YYYY')
+
+
+        if (dateAtual === data)
+            return (
+                <Typography variant="h5" color="textPrimary" component="p">
+                    {`Válido até hoje`}
+                </Typography>
+
+            )
+
+        return (
+            <Typography variant="h5" color="textPrimary" component="p">
+                {`Válido até ` + data}
+            </Typography>
+
+        )
+
+
+
+    }
 
 
     return (
@@ -47,15 +72,15 @@ export const ItemDetail = (props) => {
                 children={
                     <Box xs={12} component="div">
                         {IconNoImage ? (
-                            <FontAwesomeIcon color="#e7e4e4" size="8x" icon={faCameraRetro} />  
-                        ): (
-                            null
-                        )}
-                        
+                            <FontAwesomeIcon color="#e7e4e4" size="8x" icon={faCameraRetro} />
+                        ) : (
+                                null
+                            )}
+
                     </Box>
                 }
                 onClick={(e) => {
-                    if(modalImage.current)
+                    if (modalImage.current)
                         modalImage.current.handlerOnOpen()
                 }}
                 className={classes.media}
@@ -68,8 +93,15 @@ export const ItemDetail = (props) => {
                 <Typography variant="h5" color="textPrimary" component="p">
                     {`R$ ${item.precoAtual}`}
                 </Typography>
+
+
+                <Box>
+                    {PrintValidade}
+                </Box>
             </CardContent>
+
             {/*
+
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites">
                     <Favorite />
@@ -79,6 +111,7 @@ export const ItemDetail = (props) => {
                 </IconButton>
             </CardActions>
             */}
+
 
             <ModalImage fullWidth={true} image={ImagemItem} ref={modalImage} />
         </Card>

@@ -6,7 +6,7 @@ import {
     DialogContent,
     Button,
     makeStyles,
-    Box,
+    Grid,
     DialogTitle,
     Typography
 } from '@material-ui/core'
@@ -42,8 +42,8 @@ export const ModalDetailItem = forwardRef((props, ref) => {
 
     if (display)
         return (
-            <Box xs={6} sm={12}>
-                <Dialog open={display} onClose={handlerOnClose}>
+            
+                <Dialog open={display} onClose={handlerOnClose} maxWidth="sm" fullWidth={true}>
 
                     <DialogTitle className={classes.DialogTitle}>
                         <Toolbar>
@@ -52,13 +52,13 @@ export const ModalDetailItem = forwardRef((props, ref) => {
                             </Button>
                         </Toolbar>
                     </DialogTitle>
-
-
                     <DialogContent>
-                        <ItemDetail {...props} item={item} />
+                        <Grid container justify="center">
+                            <ItemDetail {...props} item={item} />
+                        </Grid>
                     </DialogContent>
                 </Dialog>
-            </Box>
+            
         )
 
     return null
