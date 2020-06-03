@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from 'react'
-import { ServiceMobOfertasApi as Api } from '../Services/MobOfertasApi'
+import { ServiceMobOfertasApi as Api } from '../../Services/MobOfertasApi'
 
 const defineDefaultState = {
     data: [],

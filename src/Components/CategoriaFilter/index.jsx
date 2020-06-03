@@ -3,16 +3,18 @@ import { useEffect } from 'react'
 import ListItem from './list'
 import { Grid } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import { useCategorieFilterEstabelecimentoContext } from '../../Context/CategorieFilterEstabelecimentoContext'
+
+import { useDispatch, useSelector } from 'react-redux'
+import { ActionsCategoriaFilterEstabelecimento } from '../../store-redux/reducers/CategoriaFilterEstabelecimento'
 
 
 const CategoriaFilter = () => {
-    const { state: CategorieState, dispatch } = useCategorieFilterEstabelecimentoContext()
-    
+
+    const dispatch = useDispatch()
+    const { StateCategoriaFilterEstabelecimento: CategorieState } = useSelector(state => state)
 
     useEffect(() => {
-
-        dispatch.pesquisar()
+        dispatch(ActionsCategoriaFilterEstabelecimento.Pesquisar())
     }, []) //eslint-disable-line react-hooks/exhaustive-deps
 
 

@@ -4,12 +4,13 @@ import Categoria from './innerComponent/Categorias'
 import Estabelecimento from './innerComponent/Estabelecimentos'
 import { Box } from '@material-ui/core'
 
+
 const Home = () => {
 
 
     return (
         <Fragment>
-
+            
             <AppBarHome />
 
             <Box component="div" xs={12} marginTop={18}></Box>

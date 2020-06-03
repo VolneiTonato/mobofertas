@@ -1,16 +1,17 @@
 import React from 'react'
 import { AppBar, Toolbar, Typography } from '@material-ui/core'
 import SearchBar from '../../Components/SearchBar'
-import {useEstabelecimentoSearchContext} from '../../Context/EstabelecimentoSearchContext'
+import {ActionsEstabelecimentoSearch} from '../../store-redux/reducers/EstabelecimentoSearch'
+import {useDispatch} from 'react-redux'
 import { size } from 'lodash'
 
 const AppBarHome = (props) => {
 
-    const {dispatch} = useEstabelecimentoSearchContext()
+    const dispatch = useDispatch()
 
     const handlerOnChangeQuery = (e) => {
         if(size(e.target.value) <= 30)
-            dispatch.updateState({query: e.target.value, page:1, data: []})
+            dispatch(ActionsEstabelecimentoSearch.updateState({query:e.target.value, page:1, data: []}))
         
     }
 

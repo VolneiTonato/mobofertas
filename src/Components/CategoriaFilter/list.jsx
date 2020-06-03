@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { Chip } from '@material-ui/core'
-import { useCategorieFilterEstabelecimentoContext } from '../../Context/CategorieFilterEstabelecimentoContext'
+import {useDispatch, useSelector} from 'react-redux'
+import {ActionsCategoriaFilterEstabelecimento} from '../../store-redux/reducers/CategoriaFilterEstabelecimento'
 
 
 const ListItem = ({ categorie }) => {
 
-    const { state: CategorieState, dispatch: CategorieDispatch } = useCategorieFilterEstabelecimentoContext()
+    const dispatch = useDispatch()
+
+    const {StateCategoriaFilterEstabelecimento:CategorieState} = useSelector(state => state)
+
     const [color, setColor] = useState('default')
     const [checked, setChecked] = useState(false)
 
@@ -14,8 +18,8 @@ const ListItem = ({ categorie }) => {
     const isChecked = (categorie) => {
 
         setChecked(prev => !prev)
-        
-        CategorieDispatch.changeItemSelectedCache(categorie._id)
+
+        dispatch(ActionsCategoriaFilterEstabelecimento.changeItemSelectedCache(categorie._id))
     }
 
     useEffect(() => {

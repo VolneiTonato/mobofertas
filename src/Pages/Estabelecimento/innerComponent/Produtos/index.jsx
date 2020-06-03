@@ -3,11 +3,16 @@ import { Grid, Box, CircularProgress } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import ProdutoItem from './list-item'
 import { size } from 'lodash'
-import { useProdutoSearchContext } from '../../../../Context/ProdutoSearchContext'
+import {useDispatch, useSelector} from 'react-redux'
+import {ActionsProdutoSearch} from '../../../../store-redux/reducers/ProdutoSearch'
+
 
 const ProdutosList = (props) => {
 
-    const { state, dispatch } = useProdutoSearchContext()
+    
+    const dispatch = useDispatch()
+
+    const {StateProdutoSearch:state} = useSelector(state => state)
 
 
     const observer = useRef()
@@ -21,7 +26,7 @@ const ProdutosList = (props) => {
         observer.current = new IntersectionObserver(entries => {
 
             if (entries[0].isIntersecting && state.hasMore) {
-                dispatch.pageNext()
+                dispatch(ActionsProdutoSearch.pageNext())
             }
         })
 
@@ -30,7 +35,7 @@ const ProdutosList = (props) => {
     }, [state.loading, state.hasMore])//eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
-        dispatch.pesquisar()
+        dispatch(ActionsProdutoSearch.Pesquisar())
     }, [state.query, state.owner, state.page])//eslint-disable-line react-hooks/exhaustive-deps
 
 

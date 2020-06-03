@@ -6,8 +6,9 @@ import { ScrollTopButton } from '../../Components/ScrollTop'
 import AppBarEstabelecimento from './app-bar'
 import SearchBar from '../../Components/SearchBar'
 
-import { useEstabelecimentoSelecionadoContext } from '../../Context/EstabelecimentoSelecionadoContext'
-import { useProdutoSearchContext } from '../../Context/ProdutoSearchContext'
+import { ActionsProdutoSearch } from '../../store-redux/reducers/ProdutoSearch'
+
+import {useSelector, useDispatch} from 'react-redux'
 import LojaInfo from './innerComponent/Loja'
 import TabloideList from './innerComponent/Tabloides'
 import ProdutoList from './innerComponent/Produtos'
@@ -54,16 +55,20 @@ const Estabelecimento = (props) => {
 
     const [value, setValue] = useState(0)
     const { match } = props
-    const { dispatch } = useProdutoSearchContext()
-    const { state: stateEstabelecimento } = useEstabelecimentoSelecionadoContext()
 
+    const dispatch = useDispatch()
 
-    if (stateEstabelecimento.item?._id === undefined)
+    const {StateEstabelecimentoSelected:state} = useSelector(state => state)
+
+    
+    if (state.item?._id === undefined)
         return <Redirect to={{ pathname: '/home', state: props.location }} />
         
 
     const handlerOnChangeQuery = (e) => {
-        dispatch.updateState({ page: 1, query: e.target.value, data: [] })
+
+        dispatch(ActionsProdutoSearch.updateState({page:1, query:e.target.value, data:[]}))
+
     }
 
 
@@ -79,7 +84,7 @@ const Estabelecimento = (props) => {
     return (
         <Fragment>
 
-            <AppBarEstabelecimento item={stateEstabelecimento.item} />
+            <AppBarEstabelecimento item={state.item} />
 
             <Box marginTop={10}></Box>
 

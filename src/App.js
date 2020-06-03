@@ -1,14 +1,15 @@
 import React from 'react'
 import Router from './Routes'
-import {MasterProvider} from './Store'
+import { store } from './store-redux'
+import { Provider } from 'react-redux'
 
 import 'typeface-roboto'
 
 const App = () => {
   return (
-    <MasterProvider>
-      <Router />
-    </MasterProvider>
+    <Provider store={store}>
+        <Router />
+    </Provider>
   )
 }
 

@@ -4,15 +4,15 @@ import { ExpandMore } from '@material-ui/icons'
 
 import DialogFilter from './dialog-filter'
 
-import { useCategorieFilterEstabelecimentoContext } from '../../../../Context/CategorieFilterEstabelecimentoContext'
-import { useEstabelecimentoSearchContext } from '../../../../Context/EstabelecimentoSearchContext'
+import { useSelector } from 'react-redux'
 
 const Categoria = () => {
 
     const [open, setOpen] = useState(false)
     const [chipDisabled, setChipDisabled] = useState(true)
-    const { state: categorieFilter } = useCategorieFilterEstabelecimentoContext()
-    const { state:StateEtabelecimento} = useEstabelecimentoSearchContext()
+    
+
+    const {StateEstabelecimentoSearch, StateCategoriaFilterEstabelecimento } = useSelector(state => state)
 
     const handlerClickCategorie = () => {
         
@@ -24,12 +24,12 @@ const Categoria = () => {
     }
 
     useEffect(() => {
-        setChipDisabled(StateEtabelecimento.loading)
-    }, [StateEtabelecimento.loading])
+        setChipDisabled(StateEstabelecimentoSearch.loading)
+    }, [StateEstabelecimentoSearch.loading])
 
     return (
         <Fragment>
-            <Badge overlap="circle" variant="standard" badgeContent={categorieFilter.itensSelected.length} color="secondary">
+            <Badge overlap="circle" variant="standard" badgeContent={StateCategoriaFilterEstabelecimento.itensSelected.length} color="secondary">
                 <Chip disabled={chipDisabled} dir="end" variant="default" size="medium" label="Categorias" onClick={handlerClickCategorie} onDelete={handlerClickCategorie} deleteIcon={<ExpandMore />} />
             </Badge>
             <DialogFilter handlerClose={handlerClose} open={open} />

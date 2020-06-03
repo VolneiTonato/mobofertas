@@ -3,7 +3,7 @@ import {ServiceMobOfertasApi} from '../../../../Services/MobOfertasApi'
 import {Grid, Box, CircularProgress} from '@material-ui/core'
 import {Alert} from '@material-ui/lab'
 import TabloideItem from './list-item'
-import {useEstabelecimentoSelecionadoContext} from '../../../../Context/EstabelecimentoSelecionadoContext'
+import {useSelector} from 'react-redux'
 
 const Tabloide = (props) => {
 
@@ -11,13 +11,14 @@ const Tabloide = (props) => {
     const [displayNotTabloide, setDisplayNotTabloide]  = useState(false)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
-    const {state:stateEstabelecimento} = useEstabelecimentoSelecionadoContext()
+    
+    const {StateEstabelecimentoSelected:state} = useSelector(state => state)
 
 
     const pesquisarTabloides = async () => {
         try{
             setLoading(true)
-            await ServiceMobOfertasApi.listTabloidesByEstabelecimento(stateEstabelecimento.item._id)
+            await ServiceMobOfertasApi.listTabloidesByEstabelecimento(state.item._id)
             .then((data) => {
                 let response = data?.response || []
                 

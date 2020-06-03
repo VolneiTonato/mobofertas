@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react'
-import { ServiceMobOfertasApi as Api } from '../Services/MobOfertasApi'
+import { ServiceMobOfertasApi as Api } from '../../Services/MobOfertasApi'
 
 
 const defineObjectState = Object.freeze({
@@ -54,9 +54,13 @@ export function EstabelecimentoSearchProvider({ children }) {
 
             let res = await Api.listEstabelecimentos(state.query, state.categories, { page: state.page })
 
-            let noData = res.response?.length === 0 && state.page === 1
+            
 
-            dispatch.updateState({ data: res.response, hasMore: res.pageNext, loading: false, noData: noData })
+            let data = res?.response || []
+
+            let noData = data?.length === 0 && state.page === 1
+
+            dispatch.updateState({ data: data, hasMore: res.pageNext || false, loading: false, noData: noData })
 
         } catch (err) {
             dispatch.updateState({ error: true, loading: false })

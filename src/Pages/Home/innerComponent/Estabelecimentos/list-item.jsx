@@ -1,11 +1,11 @@
-import React, { Fragment, forwardRef, useRef } from 'react'
+import React, { Fragment, forwardRef, useState, useEffect } from 'react'
 import { List, ListItem, ListItemAvatar, ListItemText, IconButton, Divider, ListItemSecondaryAction, makeStyles, Avatar, Box } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { useEstabelecimentoSelecionadoContext } from '../../../../Context/EstabelecimentoSelecionadoContext'
-import { useProdutoSearchContext } from '../../../../Context/ProdutoSearchContext'
-
+import { useDispatch, useStore, useSelector } from 'react-redux'
+import { ActionsEstabelecimentoSelected } from '../../../../store-redux/reducers/EstabelecimentoSelected'
+import { ActionsProdutoSearch } from '../../../../store-redux/reducers/ProdutoSearch'
 
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -25,25 +25,43 @@ const useStyle = makeStyles((theme) => ({
     }
 }))
 
+
+
 const Estabelecimento = ({ item }, ref) => {
 
-    const classes = useStyle()
-
-    const { dispatch } = useEstabelecimentoSelecionadoContext()
-    const { dispatch: dispatchProduto } = useProdutoSearchContext()
-
+    const classes = useStyle() 
+    const [redirectPage, setRedirectPage] = useState(false)
+   
     const history = useHistory()
 
+    const dispatch = useDispatch()
+
+    const {StateEstabelecimentoSelected:state} = useSelector(state => state)
+
+    
     const handlerGoToEstabelecimento = (item) => {
-        dispatchProduto.updateState({ owner: item._id, data: [], page: 1 })
-        dispatch.updateState({ item })
-        history.push('/estabelecimento')
-        
+
+        dispatch(ActionsProdutoSearch.updateState({ owner: item._id, data: [], page: 1 }))
+
+        dispatch(ActionsEstabelecimentoSelected.updateState({item}))
+
+
+        setRedirectPage(prev => true)
+      
+
     }
+
+    useEffect(() => {
+
+        if(redirectPage && state.item._id)
+            history.push('/estabelecimento')
+
+
+    }, [redirectPage, state.item._id] )
 
     return (
         <List ref={ref} className={classes.root}>
-            <ListItem component="nav" alignItems="flex-start" button onClick={(e) => handlerGoToEstabelecimento(item)}>
+            <ListItem component="nav" alignItems="flex-start"  button onClick={() => handlerGoToEstabelecimento(item)}>
                 <ListItemAvatar className={classes.ListItemAvatar}>
                     <Avatar alt={item.nome} variant="square" className={classes.largeAvatar} src={`${process.env.REACT_APP_IMAGENS_ESTABELECIMENTOS}/${item.avatar}`} />
                 </ListItemAvatar>
@@ -65,7 +83,7 @@ const Estabelecimento = ({ item }, ref) => {
 
                 <ListItemSecondaryAction>
 
-                    <IconButton onClick={e => handlerGoToEstabelecimento(item)}>
+                    <IconButton onClick={() => handlerGoToEstabelecimento(item)}>
                         <FontAwesomeIcon icon={faChevronRight} />
                     </IconButton>
                 </ListItemSecondaryAction>

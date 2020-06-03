@@ -1,7 +1,6 @@
 import React, { createContext, useContext } from 'react'
-import { ServiceCategoriaEstabelecimento as Api } from '../Services/MobOfertasApi/CategoriasEstabelecimentos'
+import { ServiceCategoriaEstabelecimento as Api } from '../../Services/MobOfertasApi/CategoriasEstabelecimentostos'
 import { clone as cloneObject } from 'lodash'
-import { useEstabelecimentoSearchContext} from './EstabelecimentoSearchContext'
 
 const defineObjectState = {
     data: [],
@@ -43,7 +42,6 @@ CategorieFilterEstabelecimentoContext.displayName = "CategorieFilterEstabelecime
 export function CategorieFilterEstabelecimentoProvider({ children }) {
 
     const [state, setState] = useState(defineObjectState)
-    const {dispatch:teste} = useEstabelecimentoSearchContext()
 
 
     const pesquisar = async () => {
@@ -56,7 +54,11 @@ export function CategorieFilterEstabelecimentoProvider({ children }) {
 
             let res = await Api.listCategoriasPrincipais()
 
-            let noData = res.response?.length === 0 && state.page === 1
+            
+
+            
+
+            let noData = res.data && res.data?.length === 0 && state.page === 1
 
             dispatch.updateState({ data: res.data, loading: false, noData: noData, error: false, cacheItensSelected: [], isClear: false })
 

@@ -1,14 +1,18 @@
 import React, { useState , useEffect} from 'react'
 import { Box, Button, Dialog, DialogContent, DialogActions, DialogTitle } from '@material-ui/core'
 import CategoriaFiltro from '../../../../Components/CategoriaFilter'
-import { useCategorieFilterEstabelecimentoContext } from '../../../../Context/CategorieFilterEstabelecimentoContext'
-import { useEstabelecimentoSearchContext} from '../../../../Context/EstabelecimentoSearchContext'
+import { useSelector, useDispatch } from 'react-redux'
+import {ActionsCategoriaFilterEstabelecimento} from '../../../../store-redux/reducers/CategoriaFilterEstabelecimento'
+import {ActionsEstabelecimentoSearch} from '../../../../store-redux/reducers/EstabelecimentoSearch'
 
 const DrawerFilter = (props) => {
     const [disabledButton, setDisabledButton] = useState(true)
-    const {dispatch:dispatchEstabelecimento} = useEstabelecimentoSearchContext()
-    const {state, dispatch: dispatchCategorieContext } = useCategorieFilterEstabelecimentoContext()
     const [aplyFilter, setAplyFilter] = useState(false)
+
+
+    const {StateCategoriaFilterEstabelecimento:state} = useSelector(state => state)
+
+    const dispatch = useDispatch()
 
 
     const handlerClearSelecteds = (e) => {
@@ -16,13 +20,13 @@ const DrawerFilter = (props) => {
 
         handlerDisableButton()
 
-        dispatchCategorieContext.clearFilters()
+        dispatch(ActionsCategoriaFilterEstabelecimento.clearFilters())
     }
 
 
     const handlerAplicationFilter = () => {
 
-        dispatchCategorieContext.aplicarFiltros()
+        dispatch(ActionsCategoriaFilterEstabelecimento.aplicarFiltros())
 
         setAplyFilter(true)
         
@@ -38,7 +42,8 @@ const DrawerFilter = (props) => {
     useEffect(() => {
 
         if(aplyFilter)
-            dispatchEstabelecimento.updateState({categories: state.itensSelected, data:[], page:1})
+            dispatch(ActionsEstabelecimentoSearch.updateState({categories: state.itensSelected, data: [], page:1}))
+
 
         return () => {
             setAplyFilter(false)

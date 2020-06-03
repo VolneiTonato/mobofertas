@@ -3,14 +3,13 @@ import ListItemEstabelecimento from './list-item'
 import { Grid, Box, CircularProgress } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { size } from 'lodash'
-
-import { useEstabelecimentoSearchContext } from '../../../../Context/EstabelecimentoSearchContext'
-import { useCategorieFilterEstabelecimentoContext } from '../../../../Context/CategorieFilterEstabelecimentoContext'
-//import { useContextMulti } from '../../../../Store/combine/outher'
+import { useDispatch, useSelector }  from 'react-redux'
+import { ActionsEstabelecimentoSearch } from '../../../../store-redux/reducers/EstabelecimentoSearch'
 
 const EstabelecimentosHome = () => {
-    const {state, dispatch} = useEstabelecimentoSearchContext()
-    const { state: stateCategorie } = useCategorieFilterEstabelecimentoContext()
+
+    const dispatch = useDispatch()
+    const {StateEstabelecimentoSearch:state} = useSelector(state => state)
 
     const observer = useRef()
 
@@ -24,21 +23,20 @@ const EstabelecimentosHome = () => {
         observer.current = new IntersectionObserver(entries => {
 
             if (entries[0].isIntersecting && state.hasMore) 
-                dispatch.pageNext()
+                dispatch(ActionsEstabelecimentoSearch.pageNext())
         })
 
         if (node) observer.current.observe(node)
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
-        dispatch.pesquisar()
+        dispatch(ActionsEstabelecimentoSearch.Pesquisar())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.query, state.page, state.categories])
 
-
-
-
-
+ 
 
     
     const MessageNotDataQuery = () => {
@@ -57,19 +55,21 @@ const EstabelecimentosHome = () => {
         ) : null
     }
 
+    const estabelecimentos = Array.isArray(state.data) ? state.data : []
+
 
     return (
         <Fragment>
             
-            {state.data.length > 0 ? (
+            {estabelecimentos.length > 0 ? (
                 <Fragment>
-                    {state.data.map((row, idx) =>
+                    {estabelecimentos.map((row, idx) =>
                         <Grid container key={row._id}>
                             <Grid item xs={12}>
-                                {state.data.length === (idx + 1) ? (
-                                    <ListItemEstabelecimento key={row._id} item={row} ref={lastElementRef} />
+                                {estabelecimentos.length === (idx + 1) ? (
+                                    <ListItemEstabelecimento  key={row._id} item={row} ref={lastElementRef} />
                                 ) : (
-                                    <ListItemEstabelecimento key={row._id} item={row} />
+                                    <ListItemEstabelecimento  key={row._id} item={row} />
                                     )}
                             </Grid>
                         </Grid>
