@@ -2,7 +2,7 @@
 
 Projeto com o objetivo de mostrar as ofertas e tablóides locais.
 
-###Tecnologias utilizadas:
+### Tecnologias utilizadas:
 * React
 * Redux/Toolkit
 * Axios
