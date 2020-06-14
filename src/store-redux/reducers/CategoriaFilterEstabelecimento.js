@@ -24,7 +24,7 @@ const Pesquisar = createAsyncThunk(
 
             let data = res.data || []
 
-            return { data, pageNext: res.pageNext, page: res.page }
+            return { data }
         } catch (err) {
             throw err
         }
@@ -73,8 +73,6 @@ const Reducer = createSlice({
             if (isClear === false) {
                 itens = cloneObject(state.cacheItensSelected)
 
-                console.log(itens)
-
                 if (isClear === false && state.itensSelected.length > 0 && state.cacheItensSelected.length === 0)
                     itens = cloneObject(state.itensSelected)
 
@@ -91,7 +89,7 @@ const Reducer = createSlice({
             return { ...state, loading: true, error: false }
         },
         [Pesquisar.fulfilled]: (state, { payload }) => {
-            return { ...state, loading: false, error: false, data: payload.data, noData: payload.data.length, cacheItensSelected: [], isClear: false }
+            return { ...state, loading: false, error: false, data: payload.data, noData: payload.data.length === 0, cacheItensSelected: [], isClear: false }
         },
         [Pesquisar.rejected]: (state) => {
             return { ...state, loading: false, error: true }

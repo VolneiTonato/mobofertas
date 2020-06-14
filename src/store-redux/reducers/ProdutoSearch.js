@@ -52,7 +52,7 @@ const Reducer = createSlice({
             return { ...state, loading: true, error: false }
         },
         [Pesquisar.fulfilled]: (state, { payload }) => {
-            return { ...state, data: payload.data, hasMore: payload.pageNext, loading: false, noData: payload.data.length }
+            return { ...state, data: payload.data, hasMore: payload.pageNext, loading: false, noData: payload.data.length === 0 }
         },
         [Pesquisar.rejected]: (state) => {
             return { ...state, error: true, loading: false }

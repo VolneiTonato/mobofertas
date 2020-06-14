@@ -28,7 +28,6 @@ const Pesquisar = createAsyncThunk(
 
             return {data, pageNext: res.pageNext, page : res.page }
         }catch(err){
-            console.log(err)
             throw err
         }
     }
@@ -51,7 +50,7 @@ const Reducer = createSlice({
             return {...state, loading: true, error:false}
         },
         [Pesquisar.fulfilled]: (state, {payload}) => {
-            return {...state, loading: false, error: false, data: payload.data, noData : payload.data.length, hasMore: payload.pageNext}
+            return {...state, loading: false, error: false, data: payload.data, noData : payload.data.length === 0, hasMore: payload.pageNext}
         },
         [Pesquisar.rejected]: (state) => {
             return {...state, loading: false, error: true}
